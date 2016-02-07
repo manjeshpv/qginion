@@ -7,6 +7,6 @@ import (
 
 func Init(router *httprouter.Router) {
 	router.GET("/api/subscriptions", subscriptioncontroller.GetAll)
-//	router.POST("/api/subscriptions", todocontroller.NewTodo)
+	router.POST("/api/subscriptions", subscriptioncontroller.NewSubscription)
 //	router.DELETE("/api/subscriptions/:id", todocontroller.RemoveTodo)
 }

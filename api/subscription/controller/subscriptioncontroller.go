@@ -1,18 +1,14 @@
 package subscriptioncontroller
 
 import (
-//	"github.com/manjeshpv/qginion/config"
-//	"fmt"
-//	"log"
-//	"gopkg.in/mgo.v2"
-//	"gopkg.in/mgo.v2/bson"
 	"github.com/manjeshpv/qginion/api/subscription/dao"
 	"encoding/json"
-//	"github.com/manjeshpv/qgotify/server/api/todo/dao"
-//	todo "github.com/manjeshpv/qgotify/server/api/todo/model"
+	"github.com/manjeshpv/qginion/api/subscription/model"
 	"github.com/julienschmidt/httprouter"
-//	"io/ioutil"
+	"io/ioutil"
 	"net/http"
+	"fmt"
+
 )
 
 type Person struct {
@@ -22,7 +18,7 @@ type Person struct {
 
 
 func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-
+	w.Header().Set("Content-Type", "application/json")
 	ts, err := subsriptiondao.All()
 
 //	db := dbconfig.DB{}
@@ -62,7 +58,8 @@ func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
+
+
 	w.Write(tsm)
 
 }
@@ -88,45 +85,57 @@ func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 //	w.Write(tsm)
 //}
 //
-//func NewTodo(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-//	w.Header().Set("Content-Type", "application/json")
-//
-//	t := todo.Todo{}
-//
-//	tf, err := ioutil.ReadAll(r.Body)
-//
-//	if err != nil {
-//		w.WriteHeader(http.StatusBadRequest)
-//		return
-//	}
-//
-//	defer r.Body.Close()
-//
-//	err = json.Unmarshal(tf, &t)
-//
-//	if err != nil {
-//		w.WriteHeader(http.StatusInternalServerError)
-//		return
-//	}
-//
-//	nt, err := tododao.NewTodo(t)
-//
-//	if err != nil {
-//		w.WriteHeader(http.StatusInternalServerError)
-//		return
-//	}
-//
-//	ntm, err := json.Marshal(nt)
-//
-//	if err != nil {
-//		w.WriteHeader(http.StatusInternalServerError)
-//		return
-//	}
-//
-//	w.WriteHeader(http.StatusCreated)
-//
-//	w.Write(ntm)
-//}
+func NewSubscription(res http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+	res.Header().Set("Content-Type", "application/json")
+
+	schema := subscriptionmodel.Subscription{}
+
+	subscriptionBody, err := ioutil.ReadAll(req.Body)
+
+
+
+	if err != nil {
+		res.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println("request body",string(subscriptionBody))
+
+	fmt.Println("schema:", &schema)
+
+	defer req.Body.Close()
+
+	err = json.Unmarshal(subscriptionBody, &schema)
+	fmt.Println("errr",err)
+	if err != nil {
+		fmt.Println(err)
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	nt, err := subsriptiondao.NewSubscription(schema)
+
+	fmt.Println("err",err)
+
+	if err != nil {
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Println("nt:", nt)
+
+	ntm, err := json.Marshal(nt)
+
+	if err != nil {
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	fmt.Println("ntm:", nt)
+
+	res.WriteHeader(http.StatusCreated)
+
+	res.Write(ntm)
+}
 //
 //func RemoveTodo(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 //

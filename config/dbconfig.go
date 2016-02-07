@@ -32,5 +32,5 @@ func (db *DB) DoDial() (s *mgo.Session, err error) {
 }
 
 func (db *DB) Name() string {
-	return "people"
+	return "tsc"
 }

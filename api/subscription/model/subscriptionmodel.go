@@ -7,8 +7,8 @@ import (
 
 type Subscription struct {
 	Id          bson.ObjectId `json:"_id,omitempty" bson:"_id,omitempty"`
-	Name string        `json:"todoMessage,omitempty" bson:"Name"`
-	Phone string        `json:"todoMessage,omitempty" bson:"Phone"`
+	Name string        `json:"Name,omitempty" bson:"Name"`
+	Phone string        `json:"Phone,omitempty" bson:"Phone"`
 	CreatedAt   time.Time     `json:"createdAt,omitempty" bson:"createdAt"`
 }
 

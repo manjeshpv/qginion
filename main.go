@@ -1,52 +1,25 @@
 package main
 
 import (
-//	"net/http"
-//	"encoding/json"
-	"github.com/manjeshpv/qginion/config"
 	"fmt"
-	"log"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
-//	"errors"
+	"net/http"
+	"github.com/manjeshpv/qginion/routes"
+	"github.com/julienschmidt/httprouter"
 )
-type Person struct {
-	Name string
-	Phone string
-}
 
+const port string = ":3334"
 
 
 func main() {
 
-	db := dbconfig.DB{}
+	r := httprouter.New()
 
-	session, err := db.DoDial()
+	routes.Init(r)
+	fmt.Printf("Running at %v\n", port)
+	panic(http.ListenAndServe(port, r))
 
-	if err != nil {
-		panic(err)
-	}
 
-	defer session.Close()
 
-	// Optional. Switch the session to a monotonic behavior.
-	session.SetMode(mgo.Monotonic, true)
-
-	c := session.DB("tsc").C("people")
-
-	err = c.Insert(&Person{"Ale", "+55 53 8116 9639"},
-		&Person{"Cla", "+55 53 8402 8510"})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	result := Person{}
-	err = c.Find(bson.M{"name": "Ale"}).One(&result)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Phone:", result.Phone)
 }
 //type Profile struct {
 //	Name    string

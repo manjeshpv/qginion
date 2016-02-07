@@ -1,12 +1,13 @@
 package subscriptioncontroller
 
 import (
-	"github.com/manjeshpv/qginion/config"
-	"fmt"
-	"log"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
-//	"encoding/json"
+//	"github.com/manjeshpv/qginion/config"
+//	"fmt"
+//	"log"
+//	"gopkg.in/mgo.v2"
+//	"gopkg.in/mgo.v2/bson"
+	"github.com/manjeshpv/qginion/api/subscription/dao"
+	"encoding/json"
 //	"github.com/manjeshpv/qgotify/server/api/todo/dao"
 //	todo "github.com/manjeshpv/qgotify/server/api/todo/model"
 	"github.com/julienschmidt/httprouter"
@@ -21,38 +22,48 @@ type Person struct {
 
 
 func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	db := dbconfig.DB{}
 
-	session, err := db.DoDial()
+	ts, err := subsriptiondao.All()
+
+//	db := dbconfig.DB{}
+//
+//	session, err := db.DoDial()
+//
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	defer session.Close()
+//
+//	// Optional. Switch the session to a monotonic behavior.
+//	session.SetMode(mgo.Monotonic, true)
+//
+//	c := session.DB("tsc").C("people")
+//
+//	err = c.Insert(&Person{"Ale", "+55 53 8116 9639"},
+//		&Person{"Cla", "+55 53 8402 8510"})
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	result := Person{}
+//	err = c.Find(bson.M{"name": "Ale"}).One(&result)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	fmt.Println("Phone:", result.Phone)
+
+	tsm, err := json.Marshal(ts)
 
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
-
-	defer session.Close()
-
-	// Optional. Switch the session to a monotonic behavior.
-	session.SetMode(mgo.Monotonic, true)
-
-	c := session.DB("tsc").C("people")
-
-	err = c.Insert(&Person{"Ale", "+55 53 8116 9639"},
-		&Person{"Cla", "+55 53 8402 8510"})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	result := Person{}
-	err = c.Find(bson.M{"name": "Ale"}).One(&result)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Phone:", result.Phone)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("ok"))
+	w.Write(tsm)
 
 }
 //func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
